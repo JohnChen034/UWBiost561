@@ -15,5 +15,8 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(UWBiost561)
+# library(UWBiost561)
+
+plot(1:10)
+
 ```
