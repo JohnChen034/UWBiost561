@@ -1,0 +1,213 @@
+---
+title: "HW2"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{HW2}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+# rmarkdown::render("vignettes/HW2.Rmd")
+library(bookdown)
+#> Warning: package 'bookdown' was built under R version 4.3.3
+library(tidyverse)
+#> Warning: package 'ggplot2' was built under R version 4.3.3
+#> Warning: package 'purrr' was built under R version 4.3.3
+#> Warning: package 'lubridate' was built under R version 4.3.3
+#> ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+#> ✔ dplyr     1.1.4     ✔ readr     2.1.5
+#> ✔ forcats   1.0.0     ✔ stringr   1.5.1
+#> ✔ ggplot2   3.5.2     ✔ tibble    3.2.1
+#> ✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+#> ✔ purrr     1.0.4     
+#> ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+#> ✖ dplyr::filter() masks stats::filter()
+#> ✖ dplyr::lag()    masks stats::lag()
+#> ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+library(ggplot2)
+
+country_population <- readr::read_csv("https://raw.githubusercontent.com/linnykos/561_s2025_public/main/HW2_files/country_population.csv")
+country_birth <- readr::read_csv("https://raw.githubusercontent.com/linnykos/561_s2025_public/main/HW2_files/country_birth.csv")
+penguins <- readr::read_csv("https://raw.githubusercontent.com/linnykos/561_s2025_public/main/HW2_files/palmerpenguins.csv")
+source("https://raw.githubusercontent.com/linnykos/561_s2025_public/main/HW2_files/random_graph_functions.R")
+```
+
+
+
+
+# Question 1
+
+1A: We will be manipulating the country_population data in this question. Your goal is the following: Select only rows for years between 1990 and 2010 (inclusive). Then, compute the mean population across all the years of a country for each country (defining a new variable called mean_population, via the group_by() and summarize() functions).
+
+```{r}
+country_population %>% subset(year >= 1990 &
+                                year <= 2010) %>% group_by(country) %>% summarize(mean_population = mean(year))
+```
+
+1B: We will be manipulating the country_birth data in this question. Your goal is the following: Select only rows for years between 1990 and 2010 (inclusive), keep the iso3c, year, life_expect columns, and then drop all rows with any NA in any of the 3 columns. Then, compute the minimum and maximum life expectancy (named as new columns called min_life_expect and max_life_expect) for each country across all the years (via the summarize() function), and finally, create a new column called range_life_expect that is the number of years between min_life_expect and max_life_expect for each country (via the mutate() function).
+
+```{r}
+country_birth %>% subset(year >= 1990 &
+                           year <= 2010) %>% 
+  select(iso3c, year, life_expect) %>% 
+  drop_na(iso3c, year, life_expect) %>% 
+  group_by(iso3c) %>% 
+  summarize(min_life_expect = min(life_expect), 
+            max_life_expect = max(life_expect)) %>% 
+  mutate(range_life_expect = max_life_expect-min_life_expect)
+```
+
+1C: We will now combine country_population and country_birth via a join. Specifically, using an inner_join() function, combine both these datasets by the iso3c variable, and call the new tibble object as country_both. Print out the first 10 rows of country_both. How many rows and columns are in country_both?
+
+```{r}
+country_both <- country_population %>%
+  inner_join(country_birth, by = "iso3c")
+head(country_both, n = 10)
+```
+There are 343,980 rows and 8 columns. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Q2
+```{r}
+penguins %>%
+  ggplot(aes(x = bill_depth_mm, y = bill_length_mm)) +
+  geom_point()
+```
+
+
+Question 2A: With the penguins dataset, change the x-axis label and y-axis label to say Bill Depth (mm) and Bill length (mm) respectively, as well as the title of the plot to write Relation among ??? penguins, where you use code to count how many rows there are in penguins automatically (in place of ???). Additionally, color each point based on their species, where Adelie has the color cornflowerblue, Chinstrap has the color coral2, and Gentoo has the color goldenrod3.
+
+```{r}
+penguins %>%
+  ggplot(aes(x = bill_depth_mm, y = bill_length_mm)) +
+  geom_point(aes(color = species)) +
+  scale_color_manual(values = c(
+    "Adelie" = "cornflowerblue",
+    "Chinstrap" = "coral2",
+    "Gentoo" = "goldenrod3"
+  )) +
+  labs(
+    x = "Bill Depth (mm)",
+    y = "Bill length (mm)",
+    title = paste("Relation among", nrow(penguins)  , "penguins"),
+    color = "Species",
+  ) 
+```
+
+Question 2B: We now will make the following changes: 1) we will facet the scatterplot based on the species, 2) we will add a linear regression fit on each species (regression bill_length_mm onto the bill_depth_mm) and plot the linear regression fit, and 3) changing the transparency of the points to be 50% transparent (i.e., alpha=0.5).
+
+(Hint: This question is a bit tricky since many things are going on. You will likely need the geom_smooth() and facet_wrap() functions.)
+
+Figure 4 shows the plot you are trying to reproduce.
+```{r}
+penguins %>%
+  ggplot(aes(x = bill_depth_mm, y = bill_length_mm, color = species)) +
+  geom_point(aes(alpha=0.5)) +
+  scale_color_manual(values = c(
+    "Adelie" = "cornflowerblue",
+    "Chinstrap" = "coral2",
+    "Gentoo" = "goldenrod3"
+  )) +
+  labs(
+    x = "Bill Depth (mm)",
+    y = "Bill length (mm)",
+    title = paste("Relation among", nrow(penguins)  , "penguins"),
+    color = "Species",
+  ) +
+  geom_smooth(method=lm)+
+  facet_wrap(facets="species")
+```
+
+
+```{r}
+set.seed(0)
+result <- generate_random_graph(n = 20,
+                                clique_fraction = 0.5,
+                                density_low = 0.1)
+adj_mat <- result$adj_mat
+dim(adj_mat)
+adj_mat[1:5,1:5]
+
+```
+
+Question 3A: Read how the provided generate_random_graph() works (either typing generate_random_graph into the R console or reading the code at https://raw.githubusercontent.com/linnykos/561_s2025_public/main/HW2_files/random_graph_functions.R). In three to five sentences, describe what generate_random_graph() does.
+
+- First it generate a loosely connected graph with nodes, connection controlled by density_low. Then it turns all lines into undirected, and give a line point to itself for each node. Then turn the front "clique_fraction" portion of matrix to be fully connected. Then reassign the nodes order randomly and output the graph. 
+
+
+
+Question 3B: You will now write code to produce a heatmap to visualize adj_mat. Before this can happen, though, you need one more function to convert adj_mat into a “long form,” which is a necessity when visualizing any plot as a heatmap in ggplot. See https://r-graph-gallery.com/heatmap.html. This is done via the provided pivot_longer_heatmap() function:
+In three to five sentences, describe what pivot_longer_heatmap() does. Specifically, how does the output of pivot_longer_heatmap() relate to adj_mat?
+
+```{r}
+mat_long <- pivot_longer_heatmap(adj_mat)
+
+```
+
+`pivot_longer_heatmap` basically repackaged `pivot_longer` but adjust some minor syntax for smoother transitions. After the process, we have a df that each row represents one node to node relationship of the whole matrix, so the total row would be the total possible relationships "node**2". This is required by the ggplot because they want to color each square relationship one by one. 
+
+
+
+Question 3C: Now you are ready to write code to visualize mat_long as a heatmap. Write code using ggplot’s functions to do this. You want to color all the 0 values as palegoldenrod and all the 1 values as coral2. Please set the aspect ratio of this plot to be 1:1 (i.e., your “boxes” are squares) via the coord_fixed() function.
+
+In two to four sentences, describe how the plot you made relates to adj_mat.
+
+(Hint: This question will be tricky, even though you need only roughly 7 functions. You likely want to use the geom_tile() and scale_fill_manual() functions.)
+```{r}
+ggplot(mat_long, aes(X, Y, fill= Value)) + 
+  geom_tile() +
+  scale_fill_gradient(low="palegoldenrod", high="coral2") +
+  coord_fixed(ratio=1)
+```
+
+So basically, we mark all connections with coral2 color and without connection with palegoldenrod. Basically we have a more colored way contrast compare to seeing the numeric way of adj_mat. We can tell that some nodes are clustered by visualizing the bigger squares, which can marks potential corrections among these nodes depends on what X and Y is. However, this patten of color can change if order is meaningless, which means we can reorder to create different intuition of picture.  
+
+
+Question 3D: Congratulations! You have a working pipeline to visualize any adjacency matrix. For this last question, we will combine all your functions to visualize the following:
+```{r}
+adj_mat2 <- result$adj_mat[result$rev_order, result$rev_order]
+mat_long2 <- pivot_longer_heatmap(adj_mat2)
+
+ggplot(mat_long2, aes(X, Y, fill= Value)) + 
+  geom_tile() +
+  scale_fill_gradient(low="palegoldenrod", high="coral2") +
+  coord_fixed(ratio=1)
+
+```
+
+This plot shows that adj_mat2 has a dense, fully connected block in the bottom-left corner, meaning that a subset of nodes are all connected to each other, which aligned to what the function does. Since adj_mat2 is just a permuted version of adj_mat, this confirms that adj_mat also contained a clique structure, but possibly hidden due to random node ordering, aligns what I said in 3c.
+
+
+
+
+
+# Q4
+
+For format tests, we may test if input and output always returns correct format, and will there be inconsistencies among different tables/tibbles. 
+
+We should first test extreme cases, if this `find_max_clique" runs on 1x1 matrix, and then goes to more extreme cases like 100k x 100k. Also like all connected matrix and no connectinos at all. Then, to see if the result is correct, the hardcore way is to compare the truth to function's result. These truths can be created by something like  `generate_random_graph`.
+
+If this "correct" include perspective of checking the algorithm, we can test infinite loops, correct intermediate steps. If it include tree structures I believe there are correctness test for those too. 
+
+If this "correct" include efficiency, which it does not blows in time for expected size of data, then it is more of looking at the structure of code, method used. 
+
+
+
+
+
