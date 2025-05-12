@@ -208,6 +208,6 @@ If this "correct" include perspective of checking the algorithm, we can test inf
 If this "correct" include efficiency, which it does not blows in time for expected size of data, then it is more of looking at the structure of code, method used. 
 
 
-
+do a brute force algorithm way and my new way of the algorithm to check correctness.
 
 
