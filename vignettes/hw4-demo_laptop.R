@@ -1,12 +1,10 @@
 set.seed(10)
 library(UWBiost561)
 
-data <- UWBiost561::generate_partial_clique(n = 10, 
-                                            clique_fraction = 0.9, 
-                                            clique_edge_density = 0.9)
+data <- UWBiost561::generate_partial_clique(n = 10)
 adj_mat <- data$adj_mat
 
-imp_numbers <- 1:15
+imp_numbers <- c(1:6, 8:15) # 1:15
 
 result_list <- lapply(imp_numbers, function(imp_number){
   print(paste("Working on implementation:", imp_number))
