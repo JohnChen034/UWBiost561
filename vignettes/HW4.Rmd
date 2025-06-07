@@ -1,0 +1,100 @@
+---
+title: "HW4"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{HW4}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+### Question 1B: Looking at two implementations you were given, summarize what you think the implementations are doing in one to four sentences each. (This is to practice reading other people’s code.)
+
+Implementation4: 
+
+First, it checks that the inputs are valid. Then it looks at each node’s number of connections and orders them from most to least. It builds a set by adding the highest-connection node one by one, each time checking if the group’s connections stay dense enough (at least alpha). It stops when adding another node would make the group too sparse.
+
+Implementation6:
+
+First, it checks that the adjacency matrix is a binary, symmetric matrix of size 5 to 50 with 1s on the diagonal and no row or column names, and that alpha is a single number between 0.5 and 1. Then for each node, it begins a clique with just that node and repeatedly tries adding any other node that keeps the group’s edge density at least alpha, stopping when no more nodes can be added. After growing a clique from each starting node, it picks the largest one found and calculates its edge density. Finally, it returns the sorted indices of that clique along with its density.
+
+
+### Question 1C: In terms of coding clarity (i.e., not whether the code gives a good answer), are there recommendations you would give the original author of the code to improve their code’s clarity? This can be in documentation, variable naming, whether some code could have been factorized into their dedicated functions, if some portion of code was hard to understand, etc. Give none to two suggestions for each implementation. (You can give no suggestions if you thought the code was spectacular – even if it’s not returning a great answer, you can easily understand what the code does despite being written by someone else.)
+
+For implementation4, it would help to move the code that calculates edge density into its own small function or at least give clearer variable names like `calc_density` rather than inline calculations. Also adding a brief comment before the degree-based ordering to explain the heuristic would make it easier for someone else to follow the logic.
+
+For implementation6, you may pull out the repeated edge density calculation into a separate helper or add a comment before the inner `while` loop to explain that you’re greedily adding any node that keeps the density above alpha.
+
+### Question 1D: In HW3, you wrote down at least 5 unit tests for your implementation of compute_maximal_partial_clique(). In this R Markdown file (i.e., not in your tests folder), copy-paste your 5 unit tests and see if the two compute_maximal_partial_clique implementations you were assigned pass your unit tests. If you were assigned implementations #2 and #7, you would test the functions compute_maximal_partial_clique2() and compute_maximal_partial_clique7().
+
+They all passed, I assigned implementation 4 and 6 into "compute_maximal_partial_clique" so thats why it occurs like that. 
+
+✔ | F W  S  OK | Context
+✔ |          7 | compute_maximal_partial_clique                                                                                   
+✔ |          7 | Testing generate_partial_clique                                                                                  
+
+══ Results ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 14 ]
+✔ | F W  S  OK | Context
+✔ |          7 | compute_maximal_partial_clique                                                                                   
+✔ |          7 | Testing generate_partial_clique                                                                                  
+
+══ Results ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 14 ]
+
+```{r}
+# library(UWBiost561)
+# library(testthat)
+# 
+# source("../R/compute_maximal_partial_clique4.R")
+# compute_maximal_partial_clique <- compute_maximal_partial_clique4
+# 
+# test_dir("../tests/testthat")
+# 
+# source("../R/compute_maximal_partial_clique6.R")
+# compute_maximal_partial_clique <- compute_maximal_partial_clique6
+# test_dir("../tests/testthat")
+
+
+```
+
+
+
+### Question 2A: Please run the following code. If you cannot run it, something has gone wrong with your UWBiost561 package. (For instance, it might be because your generate_partial_clique() function does not work or is not correctly located in your R package.)
+
+```{r}
+library(UWBiost561)
+
+source("../R/compute_maximal_partial_clique.R")
+source("../R/compute_maximal_partial_clique_master.R")
+set.seed(10)
+data <- UWBiost561::generate_partial_clique(n = 49, 
+                                            clique_fraction = 0.5,
+                                            clique_edge_density = 0.95)
+
+set.seed(10)
+result1 <- UWBiost561::compute_maximal_partial_clique_master(
+  adj_mat = data$adj_mat, 
+  alpha = 0.95, 
+  number = 11, 
+  time_limit = 1
+)
+result1
+
+set.seed(10)
+result2 <- UWBiost561::compute_maximal_partial_clique14(
+  adj_mat = data$adj_mat, 
+  alpha = 0.95
+)
+result2
+```
+
+
+
