@@ -1,7 +1,9 @@
 set.seed(10)
 library(UWBiost561)
 
-data <- UWBiost561::generate_partial_clique(n = 10)
+data <- UWBiost561::generate_partial_clique(n = 15,
+                                            clique_fraction = 0.9,
+                                            clique_edge_density = 0.9)
 adj_mat <- data$adj_mat
 
 imp_numbers <- c(1:6, 8:15) # 1:15
