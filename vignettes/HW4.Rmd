@@ -130,4 +130,4 @@ I decide to use the compute_maximal_partial_clique_master() function. I will use
 
 ## Q4: Describing your final project
 
-I am going to use an alignment algorithm learned in undergraduate, transform my python code to R code. 
+I am going to use UWBiostat561 to build the pkdown. 
