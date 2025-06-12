@@ -1,5 +1,5 @@
 Package: UWBiost561
-Title: What the Package Does (One Line, Title Case)
+Title: Partial Clique package
 Version: 0.0.0.9000
 Authors@R: 
     person("John", "Chen", , "jic034@uw.edu", role = c("aut", "cre"))
@@ -18,3 +18,4 @@ Suggests:
   readr,
   devtools
 VignetteBuilder: knitr
+URL: https://github.com/JohnChen034/UWBiost561, https://JohnChen034.github.io/UWBiost561
