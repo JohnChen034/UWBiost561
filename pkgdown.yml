@@ -3,7 +3,7 @@ pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   demo: demo.html
-last_built: 2025-06-12T19:24Z
+last_built: 2025-06-12T19:31Z
 urls:
   reference: https://johnchen034.github.io/UWBiost561/reference
   article: https://johnchen034.github.io/UWBiost561/articles
