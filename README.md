@@ -1,5 +1,10 @@
 # UWBiost561
  
+
+The URL to the GitHub (i.e., the source code) is: https://github.com/JohnChen034/UWBiost561
+The URL to the Pkgdown webpage is: https://johnchen034.github.io/UWBiost561/
+
+
 # How to install
 This package is called `UWBiost561`. To install, run the following code (in R):
 
