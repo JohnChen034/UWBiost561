@@ -2,8 +2,8 @@ Package: UWBiost561
 Title: What the Package Does (One Line, Title Case)
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+    person("John", "Chen", , "jic034@uw.edu", role = c("aut", "cre"))
+Description: It demonstrate a simple solution generating partial clique and compute partial clique.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

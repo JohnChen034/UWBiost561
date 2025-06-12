@@ -1,0 +1,41 @@
+---
+title: "demo"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{demo}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+We use the run_example function to get a small demo for visualization:
+```{r }
+library(UWBiost561)
+
+example <- UWBiost561::run_example() 
+example
+```
+
+
+
+to check if this is correct visually, we can plot the corresponding matrix:
+```{r}
+library('plot.matrix')
+par(mar=c(5.1, 4.1, 4.1, 4.1)) 
+full_matrix <- example$adj_mat
+plot(full_matrix)
+
+
+partial_clique_gt0.9 <- full_matrix[example$res$clique_idx, example$res$clique_idx]
+print(partial_clique_gt0.9)
+plot(partial_clique_gt0.9)
+
+
+```
+
