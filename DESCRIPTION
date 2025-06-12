@@ -16,6 +16,7 @@ Suggests:
   ggplot2,
   testthat,
   readr,
-  devtools
+  devtools,
+  plot.matrix
 VignetteBuilder: knitr
 URL: https://github.com/JohnChen034/UWBiost561, https://JohnChen034.github.io/UWBiost561, https://johnchen034.github.io/UWBiost561/
